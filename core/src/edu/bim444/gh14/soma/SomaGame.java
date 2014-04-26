@@ -22,4 +22,10 @@ public class SomaGame extends GdxGame {
         start(new GameScreen());
 	}
 
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        Assets.dispose();
+    }
 }

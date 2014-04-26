@@ -53,16 +53,22 @@ public class Entity3D extends Entity {
     public void moveTo(float x, float y, float z) {
         super.moveTo(x, y, z);
         instance.transform.setTranslation(x, y, z);
+        bounds.mul(instance.transform);
     }
 
     @Override
     public void moveBy(float x, float y, float z) {
         instance.transform.setTranslation(getX() + x, getY() + y, getZ() + z);
         super.moveBy(x, y, z);
+        bounds.mul(instance.transform);
     }
 
     public ModelInstance getModelInstance() {
         return instance;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return bounds;
     }
 
 }

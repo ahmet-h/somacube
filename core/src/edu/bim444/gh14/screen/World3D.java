@@ -6,7 +6,11 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import edu.bim444.gh14.entity.Entity;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
+import edu.bim444.gh14.entity.Entity3D;
 
 public class World3D extends World {
 
@@ -15,12 +19,17 @@ public class World3D extends World {
 
     protected ModelBatch modelBatch;
 
+    private Vector3 tmpV = new Vector3();
+
     public World3D(Screen screen, float worldWidth, float worldHeight) {
         super(screen);
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
-        modelBatch = new ModelBatch(Gdx.files.internal("default.vertex.glsl"), Gdx.files.internal("default.fragment.glsl"));
+        DefaultShaderProvider dsprovider = new DefaultShaderProvider(Gdx.files.internal("default.vertex.glsl"),
+                                                                     Gdx.files.internal("default.fragment.glsl"));
+        dsprovider.config.numDirectionalLights = 3;
+        modelBatch = new ModelBatch(null, dsprovider, null);
 
         PerspectiveCamera persCam = new PerspectiveCamera(67, worldWidth, worldHeight);
         persCam.position.set(12, 12, 12);
@@ -75,12 +84,31 @@ public class World3D extends World {
         //Gdx.input.setInputProcessor(camController);
     }
 
-    public Entity getEntityFromCoordinates(float deviceX, float deviceY) {
-        return null;
+    public Entity3D getEntityFromCoordinates(float deviceX, float deviceY) {
+        Ray ray = getCamera().getPickRay(deviceX, deviceY);
+        Entity3D entity = null;
+        float distance = Float.MAX_VALUE;
+
+        for(int i = 0; i < getSize(); i++) {
+            Entity3D e = (Entity3D) getEntity(i);
+
+            tmpV.set(e.getX(), e.getY(), e.getZ());
+            float dst2 = ray.origin.dst2(tmpV);
+            if(dst2 > distance)
+                continue;
+
+            if(Intersector.intersectRayBoundsFast(ray, e.getBoundingBox())) {
+                entity = e;
+                distance = dst2;
+            }
+        }
+
+        return entity;
     }
 
     @Override
     public void dispose() {
+        super.dispose();
         modelBatch.dispose();
     }
 

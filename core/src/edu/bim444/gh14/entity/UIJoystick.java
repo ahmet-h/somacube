@@ -59,15 +59,21 @@ public class UIJoystick extends Entity {
 
         public final Vector2 data;
 
+        private final float TOUCH_RADIUS2;
+
         private Texture head;
         private float radius;
         private float radius2;
         private Vector2 center;
         private Vector2 delta;
         private Vector2 tmpV;
+        private Vector2 tmpV2;
+        private Vector2 offset;
 
         public JoystickHead(Texture head, float radius, Screen screen) {
             super(head.getWidth() * SCALE, head.getHeight() * SCALE, screen);
+
+            TOUCH_RADIUS2 = (getWidth() / 2 + 16) * (getWidth() / 2 + 16);
 
             this.head = head;
             this.radius = radius;
@@ -75,7 +81,14 @@ public class UIJoystick extends Entity {
             center = new Vector2(getLeft() + getWidth()/2, getBottom() + getHeight()/2);
             delta = new Vector2();
             tmpV = new Vector2();
+            tmpV2 = new Vector2();
             data = new Vector2();
+            offset = new Vector2();
+        }
+
+        @Override
+        public boolean contains(float x, float y) {
+            return tmpV2.set(getLeft() + getWidth()/2, getBottom() + getHeight()/2).dst2(x, y) < TOUCH_RADIUS2;
         }
 
         public void updateCenter() {
@@ -104,8 +117,10 @@ public class UIJoystick extends Entity {
         @Override
         public boolean touchDown(float x, float y, int pointer) {
             boolean result = super.touchDown(x, y, pointer);
-            if(isTouched())
+            if(isTouched()) {
                 delta.set(x, y);
+                offset.set(x, y).sub(center);
+            }
             updateData();
             return result;
         }
@@ -115,7 +130,9 @@ public class UIJoystick extends Entity {
             delta.set(0, 0);
             moveTo(center);
             updateData();
-            return super.touchUp(x, y, pointer);
+            boolean b = isTouched();
+            super.touchUp(x, y, pointer);
+            return b;
         }
 
         @Override
@@ -130,9 +147,12 @@ public class UIJoystick extends Entity {
                 if(tmpV.set(cx, cy).sub(center).len2() > radius2) {
                     tmpV.nor().scl(radius).add(center);
                     moveTo(tmpV);
-                    if(!contains(x, y))
-                        delta.set(tmpV);
+                    if(!contains(x, y)) {
+                        delta.set(tmpV.add(offset));
+                    }
                 }
+
+                offset.set(x, y).sub(cx, cy);
 
                 updateData();
             }

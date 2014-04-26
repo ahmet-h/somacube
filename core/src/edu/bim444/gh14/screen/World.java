@@ -60,6 +60,14 @@ public abstract class World {
         entities.removeValue(entity, true);
     }
 
+    public final int getSize() {
+        return entities.size;
+    }
+
+    public final Entity getEntity(int index) {
+        return entities.get(index);
+    }
+
     private void unproject(float deviceX, float deviceY, Vector3 touch) {
         Rectangle viewport = screen.getGame().getViewport();
         cam.unproject(touch.set(deviceX, deviceY, 0), viewport.x, viewport.y, viewport.width, viewport.height);
@@ -129,4 +137,7 @@ public abstract class World {
         return cam;
     }
 
+    public Screen getScreen() {
+        return screen;
+    }
 }
