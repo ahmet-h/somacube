@@ -68,6 +68,10 @@ public abstract class World {
         return entities.get(index);
     }
 
+    public final Array<Entity> getEntities() {
+        return entities;
+    }
+
     private void unproject(float deviceX, float deviceY, Vector3 touch) {
         Rectangle viewport = screen.getGame().getViewport();
         cam.unproject(touch.set(deviceX, deviceY, 0), viewport.x, viewport.y, viewport.width, viewport.height);
@@ -140,4 +144,13 @@ public abstract class World {
     public Screen getScreen() {
         return screen;
     }
+
+    public void translateCamera(float deltaX, float deltaY, float deltaZ) {
+        cam.translate(deltaX, deltaY, deltaZ);
+    }
+
+    public void translateCamera(Vector3 delta) {
+        cam.translate(delta.x, delta.y, delta.z);
+    }
+
 }

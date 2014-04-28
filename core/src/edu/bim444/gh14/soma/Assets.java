@@ -7,6 +7,7 @@ public class Assets {
     public static Texture joystickBase;
     public static Texture joystickHead;
     public static Texture wood;
+    public static Texture wood_brown;
     public static Texture wood_selected;
 
     public static void load() {
@@ -16,6 +17,8 @@ public class Assets {
         joystickHead.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         wood = new Texture("wood_small.jpg");
         wood.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        wood_brown = new Texture("wood_small_brown.jpg");
+        wood_brown.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         wood_selected = new Texture("wood_small_selected.jpg");
         wood_selected.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
@@ -24,6 +27,7 @@ public class Assets {
         joystickBase.dispose();
         joystickHead.dispose();
         wood.dispose();
+        wood_brown.dispose();
         wood_selected.dispose();
     }
 

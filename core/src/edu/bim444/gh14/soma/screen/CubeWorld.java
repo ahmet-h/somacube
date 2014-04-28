@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import edu.bim444.gh14.entity.CubeEntity;
@@ -40,14 +41,20 @@ public class CubeWorld extends World3D {
         addEntity(new CubeGroup(CubeGroup.PIECE_B, screen, this));
         addEntity(new CubeGroup(CubeGroup.PIECE_P, screen, this));
 
-        getEntity(1).moveBy(CUBE_WIDTH * 4, 0, 0);
-        getEntity(2).moveBy(-CUBE_WIDTH * 4, 0, CUBE_WIDTH * 2);
-        getEntity(3).moveBy(-CUBE_WIDTH * 4, 0, -CUBE_WIDTH * 4);
-        getEntity(4).moveBy(CUBE_WIDTH * 4, 0, CUBE_WIDTH * 4);
-        getEntity(5).moveBy(0, 0, CUBE_WIDTH * 5);
-        getEntity(6).moveBy(0, 0, -CUBE_WIDTH * 4);
+        getEntity(0).moveTo(0, 0, 0);
+        getEntity(1).moveTo(CUBE_WIDTH * 3, 0, -CUBE_WIDTH * 2);
+        getEntity(2).moveTo(-CUBE_WIDTH * 3, 0, CUBE_WIDTH * 2);
+        getEntity(3).moveTo(-CUBE_WIDTH * 3, 0, -CUBE_WIDTH * 2);
+        getEntity(4).moveTo(CUBE_WIDTH * 3, 0, CUBE_WIDTH * 2);
+        getEntity(5).moveTo(0, 0, CUBE_WIDTH * 4);
+        getEntity(6).moveTo(0, 0, -CUBE_WIDTH * 4);
 
         setCameraTouchController(new CameraTouchController(getCamera()));
+    }
+
+    @Override
+    public void update() {
+
     }
 
     @Override
@@ -64,10 +71,13 @@ public class CubeWorld extends World3D {
 
     @Override
     public boolean touchWorldUp(float deviceX, float deviceY, int pointer) {
-        if(selectedGroup != null)
-            selectedGroup.setSelected(false);
-        selectedGroup = (CubeGroup) getEntityFromCoordinates(deviceX, deviceY);
-        if(selectedGroup != null && selectedGroup == selectingGroup) {
+        CubeGroup cg = (CubeGroup) getEntityFromCoordinates(deviceX, deviceY);
+
+        if(cg != null && cg == selectingGroup) {
+            if(selectedGroup != null)
+                selectedGroup.setSelected(false);
+
+            selectedGroup = cg;
             selectedGroup.setAnchor(anchor);
             selectedGroup.setSelected(true);
         }
@@ -77,7 +87,8 @@ public class CubeWorld extends World3D {
 
     @Override
     public Entity3D getEntityFromCoordinates(float deviceX, float deviceY) {
-        Ray ray = getCamera().getPickRay(deviceX, deviceY);
+        Rectangle vp = getScreen().getGame().getViewport();
+        Ray ray = getCamera().getPickRay(deviceX, deviceY, 0, 0, vp.width, vp.height);
         CubeGroup entity = null;
         float distance = Float.MAX_VALUE;
         int anchor = -1;

@@ -20,9 +20,9 @@ public class CameraTouchController extends CameraInputController {
     private float deltaY;
     private float[] deltaArrayX;
     private float[] deltaArrayY;
-    private final int deltaLength = 6;
+    private final int deltaLength = 4;
     private int deltaIndex;
-    private final float deltaFactor = 0.98f;
+    private final float deltaFactor = 0.95f;
 
     private Vector3 tmpV = new Vector3();
 

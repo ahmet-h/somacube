@@ -53,14 +53,15 @@ public class Entity3D extends Entity {
     public void moveTo(float x, float y, float z) {
         super.moveTo(x, y, z);
         instance.transform.setTranslation(x, y, z);
-        bounds.mul(instance.transform);
+        bounds.set(bounds.min.add(x - bounds.min.x, y - bounds.min.y, y - bounds.min.y),
+                   bounds.max.add(x - bounds.max.x, y - bounds.max.y, y - bounds.max.y));
     }
 
     @Override
     public void moveBy(float x, float y, float z) {
         instance.transform.setTranslation(getX() + x, getY() + y, getZ() + z);
         super.moveBy(x, y, z);
-        bounds.mul(instance.transform);
+        bounds.set(bounds.min.add(x, y, z), bounds.max.add(x, y, z));
     }
 
     public ModelInstance getModelInstance() {

@@ -47,6 +47,7 @@ public class CubeGroup extends Entity3D {
             0, 1, 0,
             0, 0, 1,
             1, 0, 0};
+    public static final int[] PIECE = new int[] {0, 0, 0};
 
     private final Color SELECTED_COLOR = new Color(0.7f, 0.8f, 0.7f, 1);
 
@@ -60,7 +61,7 @@ public class CubeGroup extends Entity3D {
         cubes = new Array<>();
         for(int i = 0; i < positions.length / 3; i++) {
             CubeEntity cube = new CubeEntity(screen, world3D, CubeWorld.CUBE_WIDTH, Assets.wood, MathUtils.random(0.8f, 0.85f));
-            cube.moveTo(positions[i * 3] * CubeWorld.CUBE_WIDTH,
+            cube.moveBy(positions[i * 3] * CubeWorld.CUBE_WIDTH,
                     positions[i * 3 + 1] * CubeWorld.CUBE_WIDTH,
                     positions[i * 3 + 2] * CubeWorld.CUBE_WIDTH);
             cubes.add(cube);
@@ -77,14 +78,17 @@ public class CubeGroup extends Entity3D {
     @Override
     public void draw(float alpha) {
         for(CubeEntity cube : cubes) {
-            cube.drawEntity(alpha);
+            cube.draw(alpha);
         }
     }
 
     @Override
     public void moveTo(float x, float y, float z) {
+        float xx = cubes.get(anchor).getX();
+        float yy = cubes.get(anchor).getY();
+        float zz = cubes.get(anchor).getZ();
         for(CubeEntity cube : cubes) {
-            cube.moveTo(x, y, z);
+            cube.moveBy(x - xx, y - yy, z - zz);
         }
     }
 
@@ -120,12 +124,14 @@ public class CubeGroup extends Entity3D {
             return;
 
         this.selected = selected;
-        if(selected) {
-            TextureAttribute attr = (TextureAttribute) cubes.get(anchor).getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
-            attr.textureDescription.texture = Assets.wood_selected;
-        } else {
-            TextureAttribute attr = (TextureAttribute) cubes.get(anchor).getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
-            attr.textureDescription.texture = Assets.wood;
+        for(CubeEntity cube : cubes) {
+            if(selected) {
+                TextureAttribute attr = (TextureAttribute) cube.getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
+                attr.textureDescription.texture = (cube == cubes.get(anchor)) ? Assets.wood_selected : Assets.wood_brown;
+            } else {
+                TextureAttribute attr = (TextureAttribute) cube.getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
+                attr.textureDescription.texture = Assets.wood;
+            }
         }
     }
 

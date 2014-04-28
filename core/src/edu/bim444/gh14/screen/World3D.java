@@ -41,14 +41,15 @@ public class World3D extends World {
     }
 
     @Override
-    public void drawWorld(float alpha) {
-        super.drawWorld(alpha);
+    public void updateWorld() {
+        super.updateWorld();
+        if(camController != null)
+            camController.updateDelta();
     }
 
     @Override
     public void update() {
-        if(camController != null)
-            camController.updateDelta();
+
     }
 
     @Override
@@ -118,6 +119,13 @@ public class World3D extends World {
 
     public Environment getEnvironment() {
         return environment;
+    }
+
+    @Override
+    public void translateCamera(float deltaX, float deltaY, float deltaZ) {
+        super.translateCamera(deltaX, deltaY, deltaZ);
+        if(camController != null)
+            camController.target.add(deltaX, deltaY, deltaZ);
     }
 
 }
