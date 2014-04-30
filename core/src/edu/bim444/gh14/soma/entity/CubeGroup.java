@@ -84,9 +84,9 @@ public class CubeGroup extends Entity3D {
 
     @Override
     public void moveTo(float x, float y, float z) {
-        float xx = cubes.get(anchor).getX();
-        float yy = cubes.get(anchor).getY();
-        float zz = cubes.get(anchor).getZ();
+        float xx = getX();
+        float yy = getY();
+        float zz = getZ();
         for(CubeEntity cube : cubes) {
             cube.moveBy(x - xx, y - yy, z - zz);
         }
@@ -97,6 +97,21 @@ public class CubeGroup extends Entity3D {
         for(CubeEntity cube : cubes) {
             cube.moveBy(x, y, z);
         }
+    }
+
+    @Override
+    public float getX() {
+        return cubes.get(anchor).getX();
+    }
+
+    @Override
+    public float getY() {
+        return cubes.get(anchor).getY();
+    }
+
+    @Override
+    public float getZ() {
+        return cubes.get(anchor).getZ();
     }
 
     public CubeEntity getCube(int index) {
@@ -120,9 +135,6 @@ public class CubeGroup extends Entity3D {
     }
 
     public void setSelected(boolean selected) {
-        if(isSelected() == selected)
-            return;
-
         this.selected = selected;
         for(CubeEntity cube : cubes) {
             if(selected) {

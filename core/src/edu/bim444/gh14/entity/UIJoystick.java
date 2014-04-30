@@ -10,6 +10,9 @@ public class UIJoystick extends Entity {
 
     private Texture base;
     private JoystickHead head;
+    private boolean directed;
+
+    private UIJoystickListener listener;
 
     public UIJoystick(Texture base, Texture head, Screen screen) {
         super(base.getWidth() * SCALE, base.getHeight() * SCALE, screen);
@@ -53,6 +56,10 @@ public class UIJoystick extends Entity {
         super.moveTo(x, y);
         head.moveTo(getLeft() + getWidth()/2, getBottom() + getHeight()/2);
         head.updateCenter();
+    }
+
+    public void setUIJoystickListener(UIJoystickListener listener) {
+        this.listener = listener;
     }
 
     private class JoystickHead extends TouchEntity {
@@ -130,6 +137,7 @@ public class UIJoystick extends Entity {
             delta.set(0, 0);
             moveTo(center);
             updateData();
+            directed = false;
             boolean b = isTouched();
             super.touchUp(x, y, pointer);
             return b;
@@ -150,6 +158,17 @@ public class UIJoystick extends Entity {
                     if(!contains(x, y)) {
                         delta.set(tmpV.add(offset));
                     }
+
+                    // Listener Event
+                    int dir = -1;
+                    updateData();
+                    if(Math.abs(data.x) > Math.abs(data.y))
+                        dir = (data.x < 0) ? UIJoystickListener.LEFT : UIJoystickListener.RIGHT;
+                    else
+                        dir = (data.y < 0) ? UIJoystickListener.DOWN : UIJoystickListener.UP;
+                    if(listener != null && !directed)
+                        listener.onDirection(dir);
+                    directed = true;
                 }
 
                 offset.set(x, y).sub(cx, cy);

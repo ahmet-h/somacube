@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import edu.bim444.gh14.screen.Screen;
 import edu.bim444.gh14.screen.World3D;
@@ -62,6 +63,11 @@ public class Entity3D extends Entity {
         instance.transform.setTranslation(getX() + x, getY() + y, getZ() + z);
         super.moveBy(x, y, z);
         bounds.set(bounds.min.add(x, y, z), bounds.max.add(x, y, z));
+    }
+
+    public void rotateAround(Vector3 axis, float degrees) {
+        instance.transform.rotate(axis ,degrees);
+        // ...
     }
 
     public ModelInstance getModelInstance() {

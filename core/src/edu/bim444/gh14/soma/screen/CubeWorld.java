@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import edu.bim444.gh14.entity.CubeEntity;
-import edu.bim444.gh14.entity.Entity3D;
+import edu.bim444.gh14.entity.*;
 import edu.bim444.gh14.screen.CameraTouchController;
 import edu.bim444.gh14.screen.Screen;
 import edu.bim444.gh14.screen.World3D;
@@ -17,13 +15,17 @@ import edu.bim444.gh14.soma.entity.CubeGroup;
 public class CubeWorld extends World3D {
 
     public static final float CUBE_WIDTH = 5;
+    public static final int MOVE_ANIM_DURATION = 10;
 
     private CubeGroup selectingGroup;
     private CubeGroup selectedGroup;
-    private int anchor;
     private Vector3 tmpV = new Vector3();
 
-    public CubeWorld(Screen screen) {
+    private Animator moveAnimator;
+    private Vector3 currPos = new Vector3();
+    private Vector3 moveDir = new Vector3();
+
+    public CubeWorld(Screen screen, UIJoystick joystickLeft, UIJoystick joystickRight) {
         super(screen, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Vector3 dir = new Vector3(-1, -0.75f, -1);
@@ -50,11 +52,61 @@ public class CubeWorld extends World3D {
         getEntity(6).moveTo(0, 0, -CUBE_WIDTH * 4);
 
         setCameraTouchController(new CameraTouchController(getCamera()));
+
+        moveAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+
+        joystickLeft.setUIJoystickListener(new UIJoystickListener() {
+            @Override
+            public void onDirection(int dir) {
+                if(selectedGroup == null || !moveAnimator.isPaused())
+                    return;
+
+                float dotX = getCamera().direction.dot(Vector3.X);
+                float dotZ = getCamera().direction.dot(Vector3.Z);
+
+                currPos.set(selectedGroup.getCube(selectedGroup.getAnchor()).getX(),
+                            selectedGroup.getCube(selectedGroup.getAnchor()).getY(),
+                            selectedGroup.getCube(selectedGroup.getAnchor()).getZ());
+
+                if(Math.abs(dotX) > Math.abs(dotZ)) {
+                    moveDir.set(Math.signum(dotX), 0, 0);
+                } else {
+                    moveDir.set(0, 0, Math.signum(dotZ));
+                }
+
+                if(dir == UIJoystickListener.DOWN)
+                    moveDir.rotate(Vector3.Y, 180);
+                else if(dir == UIJoystickListener.LEFT)
+                    moveDir.rotate(Vector3.Y, 90);
+                else if(dir == UIJoystickListener.RIGHT)
+                    moveDir.rotate(Vector3.Y, -90);
+
+                moveDir.x = Math.round(moveDir.x);
+                moveDir.y = Math.round(moveDir.y);
+                moveDir.z = Math.round(moveDir.z);
+
+                moveAnimator.set(0, CUBE_WIDTH, MOVE_ANIM_DURATION);
+                moveAnimator.start();
+            }
+        });
     }
 
     @Override
     public void update() {
+        boolean movePaused = moveAnimator.isPaused();
 
+        moveAnimator.update();
+
+        if(!movePaused) {
+            if(moveDir.x == 1)
+                selectedGroup.moveTo(currPos.x + moveAnimator.getCurrentValue(), currPos.y, currPos.z);
+            else if(moveDir.x == -1)
+                selectedGroup.moveTo(currPos.x - moveAnimator.getCurrentValue(), currPos.y, currPos.z);
+            else if(moveDir.z == 1)
+                selectedGroup.moveTo(currPos.x, currPos.y, currPos.z + moveAnimator.getCurrentValue());
+            else if(moveDir.z == -1)
+                selectedGroup.moveTo(currPos.x, currPos.y, currPos.z - moveAnimator.getCurrentValue());
+        }
     }
 
     @Override
@@ -78,7 +130,6 @@ public class CubeWorld extends World3D {
                 selectedGroup.setSelected(false);
 
             selectedGroup = cg;
-            selectedGroup.setAnchor(anchor);
             selectedGroup.setSelected(true);
         }
 
@@ -87,8 +138,10 @@ public class CubeWorld extends World3D {
 
     @Override
     public Entity3D getEntityFromCoordinates(float deviceX, float deviceY) {
-        Rectangle vp = getScreen().getGame().getViewport();
-        Ray ray = getCamera().getPickRay(deviceX, deviceY, 0, 0, vp.width, vp.height);
+        if(!moveAnimator.isPaused())
+            return null;
+
+        Ray ray = getCamera().getPickRay(deviceX, deviceY);
         CubeGroup entity = null;
         float distance = Float.MAX_VALUE;
         int anchor = -1;
@@ -113,10 +166,14 @@ public class CubeWorld extends World3D {
         }
 
         if(entity != null) {
-            this.anchor = anchor;
+            entity.setAnchor(anchor);
         }
 
         return entity;
     }
 
+    @Override
+    public boolean isRenderingRequested() {
+        return super.isRenderingRequested() || !moveAnimator.isPaused();
+    }
 }

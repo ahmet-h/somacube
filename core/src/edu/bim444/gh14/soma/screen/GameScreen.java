@@ -11,7 +11,6 @@ public class GameScreen extends Screen {
     public void init(GdxGame game) {
         super.init(game);
 
-        setWorld(new CubeWorld(this));
         UIJoystick joystickLeft = new UIJoystick(Assets.joystickBase, Assets.joystickHead, this);
         joystickLeft.moveTo(getLeft() + joystickLeft.getWidth()/2 + 60, getBottom() + joystickLeft.getHeight()/2 + 40);
         addEntity(joystickLeft);
@@ -19,6 +18,8 @@ public class GameScreen extends Screen {
         UIJoystick joystickRight = new UIJoystick(Assets.joystickBase, Assets.joystickHead, this);
         joystickRight.moveTo(getRight() - joystickLeft.getWidth()/2 - 60, getBottom() + joystickLeft.getHeight()/2 + 40);
         addEntity(joystickRight);
+        
+        setWorld(new CubeWorld(this, joystickLeft, joystickRight));
     }
 
     @Override
