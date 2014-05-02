@@ -3,6 +3,7 @@ package edu.bim444.gh14.soma.entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import edu.bim444.gh14.entity.CubeEntity;
 import edu.bim444.gh14.entity.Entity3D;
@@ -93,9 +94,23 @@ public class CubeGroup extends Entity3D {
     }
 
     @Override
-    public void moveBy(float x, float y, float z) {
+    public void moveBy(float dx, float dy, float dz) {
         for(CubeEntity cube : cubes) {
-            cube.moveBy(x, y, z);
+            cube.moveBy(dx, dy, dz);
+        }
+    }
+
+    @Override
+    public void rotate(Vector3 axis, float degrees) {
+        for(CubeEntity cube : cubes) {
+            cube.rotate(axis, degrees);
+        }
+    }
+
+    @Override
+    public void rotateAround(Vector3 point, Vector3 axis, float degrees) {
+        for(CubeEntity cube : cubes) {
+            cube.rotateAround(point, axis, degrees);
         }
     }
 

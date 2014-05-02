@@ -1,5 +1,6 @@
 package edu.bim444.gh14.entity;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import edu.bim444.gh14.screen.Screen;
@@ -7,6 +8,7 @@ import edu.bim444.gh14.screen.Screen;
 public class UIJoystick extends Entity {
 
     public static final float SCALE = 1.25f;
+    public static final float ALPHA = 0.8f;
 
     private Texture base;
     private JoystickHead head;
@@ -29,9 +31,14 @@ public class UIJoystick extends Entity {
 
     @Override
     public void draw(float alpha) {
+        Color c = spriteBatch.getColor();
+        spriteBatch.setColor(c.r, c.g, c.b, ALPHA);
+
         spriteBatch.begin();
         spriteBatch.draw(base, getLeft(), getBottom(), getWidth(), getHeight());
         spriteBatch.end();
+
+        spriteBatch.setColor(c.r, c.g, c.b, 1);
 
         head.draw(alpha);
     }

@@ -24,8 +24,10 @@ public class CubeWorld extends World3D {
     private Animator moveAnimator;
     private Vector3 currPos = new Vector3();
     private Vector3 moveDir = new Vector3();
+    private Animator rotationAnimator;
+    private Vector3 rotationAxis = new Vector3();
 
-    public CubeWorld(Screen screen, UIJoystick joystickLeft, UIJoystick joystickRight) {
+    public CubeWorld(Screen screen, UIJoystick joystickLeft, UIJoystick joystickRight, UIButton upButton, UIButton downButton) {
         super(screen, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Vector3 dir = new Vector3(-1, -0.75f, -1);
@@ -54,11 +56,12 @@ public class CubeWorld extends World3D {
         setCameraTouchController(new CameraTouchController(getCamera()));
 
         moveAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+        rotationAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
 
         joystickLeft.setUIJoystickListener(new UIJoystickListener() {
             @Override
             public void onDirection(int dir) {
-                if(selectedGroup == null || !moveAnimator.isPaused())
+                if(selectedGroup == null || !moveAnimator.isPaused() || !rotationAnimator.isPaused())
                     return;
 
                 float dotX = getCamera().direction.dot(Vector3.X);
@@ -89,23 +92,102 @@ public class CubeWorld extends World3D {
                 moveAnimator.start();
             }
         });
+
+        joystickRight.setUIJoystickListener(new UIJoystickListener() {
+            @Override
+            public void onDirection(int dir) {
+                if(selectedGroup == null || !moveAnimator.isPaused() || !rotationAnimator.isPaused())
+                    return;
+
+                currPos.set(selectedGroup.getCube(selectedGroup.getAnchor()).getX(),
+                            selectedGroup.getCube(selectedGroup.getAnchor()).getY(),
+                            selectedGroup.getCube(selectedGroup.getAnchor()).getZ());
+
+                if(dir == UIJoystickListener.UP || dir == UIJoystickListener.DOWN) {
+                    tmpV.set(getCamera().direction).crs(getCamera().up).y = 0f;
+                    float dotX = tmpV.nor().dot(Vector3.X);
+                    tmpV.set(getCamera().direction).crs(getCamera().up).y = 0f;
+                    float dotZ = tmpV.nor().dot(Vector3.Z);
+
+                    if(Math.abs(dotX) > Math.abs(dotZ)) {
+                        rotationAxis.set(Math.signum(dotX), 0, 0);
+                    } else {
+                        rotationAxis.set(0, 0, Math.signum(dotZ));
+                    }
+
+                    if(dir == UIJoystickListener.UP)
+                        rotationAxis.scl(-1);
+                } else if(dir == UIJoystickListener.LEFT) {
+                    rotationAxis.set(0, -1, 0);
+                } else if(dir == UIJoystickListener.RIGHT) {
+                    rotationAxis.set(0, 1, 0);
+                }
+
+                rotationAnimator.set(0, 90, MOVE_ANIM_DURATION);
+                rotationAnimator.start();
+            }
+        });
+
+        upButton.setUIButtonListener(new UIButtonListener() {
+            @Override
+            public void onClick() {
+                if(selectedGroup == null || !moveAnimator.isPaused() || !rotationAnimator.isPaused())
+                    return;
+
+                currPos.set(selectedGroup.getCube(selectedGroup.getAnchor()).getX(),
+                        selectedGroup.getCube(selectedGroup.getAnchor()).getY(),
+                        selectedGroup.getCube(selectedGroup.getAnchor()).getZ());
+
+                moveDir.set(0, 1, 0);
+
+                moveAnimator.set(0, CUBE_WIDTH, MOVE_ANIM_DURATION);
+                moveAnimator.start();
+            }
+        });
+
+        downButton.setUIButtonListener(new UIButtonListener() {
+            @Override
+            public void onClick() {
+                if(selectedGroup == null || !moveAnimator.isPaused() || !rotationAnimator.isPaused())
+                    return;
+
+                currPos.set(selectedGroup.getCube(selectedGroup.getAnchor()).getX(),
+                        selectedGroup.getCube(selectedGroup.getAnchor()).getY(),
+                        selectedGroup.getCube(selectedGroup.getAnchor()).getZ());
+
+                moveDir.set(0, -1, 0);
+
+                moveAnimator.set(0, CUBE_WIDTH, MOVE_ANIM_DURATION);
+                moveAnimator.start();
+            }
+        });
     }
 
     @Override
     public void update() {
         boolean movePaused = moveAnimator.isPaused();
+        boolean rotationPaused = rotationAnimator.isPaused();
 
         moveAnimator.update();
+        rotationAnimator.update();
 
         if(!movePaused) {
             if(moveDir.x == 1)
                 selectedGroup.moveTo(currPos.x + moveAnimator.getCurrentValue(), currPos.y, currPos.z);
             else if(moveDir.x == -1)
                 selectedGroup.moveTo(currPos.x - moveAnimator.getCurrentValue(), currPos.y, currPos.z);
+            else if(moveDir.y == 1)
+                selectedGroup.moveTo(currPos.x, currPos.y + moveAnimator.getCurrentValue(), currPos.z);
+            else if(moveDir.y == -1)
+                selectedGroup.moveTo(currPos.x, currPos.y - moveAnimator.getCurrentValue(), currPos.z);
             else if(moveDir.z == 1)
                 selectedGroup.moveTo(currPos.x, currPos.y, currPos.z + moveAnimator.getCurrentValue());
             else if(moveDir.z == -1)
                 selectedGroup.moveTo(currPos.x, currPos.y, currPos.z - moveAnimator.getCurrentValue());
+        }
+
+        if(!rotationPaused) {
+            selectedGroup.rotateAround(currPos, rotationAxis, (float) 90 / MOVE_ANIM_DURATION);
         }
     }
 
@@ -174,6 +256,7 @@ public class CubeWorld extends World3D {
 
     @Override
     public boolean isRenderingRequested() {
-        return super.isRenderingRequested() || !moveAnimator.isPaused();
+        return super.isRenderingRequested() || !moveAnimator.isPaused() || !rotationAnimator.isPaused();
     }
+
 }

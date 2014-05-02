@@ -32,7 +32,7 @@ public class World3D extends World {
         modelBatch = new ModelBatch(null, dsprovider, null);
 
         PerspectiveCamera persCam = new PerspectiveCamera(67, worldWidth, worldHeight);
-        persCam.position.set(12, 12, 12);
+        persCam.position.set(16, 16, 16);
         persCam.lookAt(0, 0, 0);
         persCam.near = 1;
         persCam.far = 300;
