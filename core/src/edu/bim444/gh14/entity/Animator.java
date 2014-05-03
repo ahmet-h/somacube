@@ -56,9 +56,9 @@ public class Animator {
             if(endDelayCount > 0) {
                 endDelayCount--;
             } else {
+                pause();
                 if(listener != null)
                     listener.onAnimationEnd();
-                pause();
             }
         }
     }
@@ -66,6 +66,14 @@ public class Animator {
     public float getCurrentValue() {
         final float normalized = (float) tick / duration;
         return fromValue + interpolator.getInterpolation(normalized) * deltaValue;
+    }
+
+    public float getNormalizedValue() {
+        return interpolator.getInterpolation((float) tick / duration);
+    }
+
+    public float getProgress() {
+        return (float) tick / duration;
     }
 
     public void start() {

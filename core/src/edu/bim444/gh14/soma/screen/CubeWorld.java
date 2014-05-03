@@ -16,16 +16,23 @@ public class CubeWorld extends World3D {
 
     public static final float CUBE_WIDTH = 5;
     public static final int MOVE_ANIM_DURATION = 10;
+    public static final int CAM_ANIM_DURATION = 20;
 
     private CubeGroup selectingGroup;
     private CubeGroup selectedGroup;
     private Vector3 tmpV = new Vector3();
+    private Vector3 tmpV2 = new Vector3();
 
     private Animator moveAnimator;
     private Vector3 currPos = new Vector3();
     private Vector3 moveDir = new Vector3();
     private Animator rotationAnimator;
     private Vector3 rotationAxis = new Vector3();
+
+    private Vector3 camPosBegin = new Vector3();
+    private Vector3 camPosDelta = new Vector3();
+    private Animator camAnimator;
+    private boolean camMoveInterrupted;
 
     public CubeWorld(Screen screen, UIJoystick joystickLeft, UIJoystick joystickRight, UIButton upButton, UIButton downButton) {
         super(screen, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -56,7 +63,22 @@ public class CubeWorld extends World3D {
         setCameraTouchController(new CameraTouchController(getCamera()));
 
         moveAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+        moveAnimator.setAnimatorListener(new AnimatorListener() {
+            @Override
+            public void onAnimationEnd() {
+                getCameraTouchController().resetDelta();
+                centerCameraPosition(true);
+            }
+        });
         rotationAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+        rotationAnimator.setAnimatorListener(new AnimatorListener() {
+            @Override
+            public void onAnimationEnd() {
+                getCameraTouchController().resetDelta();
+                centerCameraPosition(true);
+            }
+        });
+        camAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
 
         joystickLeft.setUIJoystickListener(new UIJoystickListener() {
             @Override
@@ -161,15 +183,19 @@ public class CubeWorld extends World3D {
                 moveAnimator.start();
             }
         });
+
+        centerCameraPosition(false);
     }
 
     @Override
     public void update() {
         boolean movePaused = moveAnimator.isPaused();
         boolean rotationPaused = rotationAnimator.isPaused();
+        boolean camAnimPaused = camAnimator.isPaused();
 
         moveAnimator.update();
         rotationAnimator.update();
+        camAnimator.update();
 
         if(!movePaused) {
             if(moveDir.x == 1)
@@ -189,6 +215,10 @@ public class CubeWorld extends World3D {
         if(!rotationPaused) {
             selectedGroup.rotateAround(currPos, rotationAxis, (float) 90 / MOVE_ANIM_DURATION);
         }
+
+        if(!camAnimPaused) {
+            moveCameraTo(tmpV.set(camPosBegin).add(tmpV2.set(camPosDelta).scl(camAnimator.getNormalizedValue())));
+        }
     }
 
     @Override
@@ -204,7 +234,24 @@ public class CubeWorld extends World3D {
     }
 
     @Override
+    public boolean touchWorldDragged(float deviceX, float deviceY, int pointer) {
+        if(!camAnimator.isPaused()) {
+            camMoveInterrupted = true;
+            camAnimator.stop();
+            return false;
+        }
+
+        return super.touchWorldDragged(deviceX, deviceY, pointer);
+    }
+
+    @Override
     public boolean touchWorldUp(float deviceX, float deviceY, int pointer) {
+        if(camMoveInterrupted) {
+            getCameraTouchController().resetDelta();
+            centerCameraPosition(true);
+            camMoveInterrupted = false;
+        }
+
         CubeGroup cg = (CubeGroup) getEntityFromCoordinates(deviceX, deviceY);
 
         if(cg != null && cg == selectingGroup) {
@@ -254,9 +301,30 @@ public class CubeWorld extends World3D {
         return entity;
     }
 
+    public void centerCameraPosition(boolean animated) {
+        tmpV.set(Vector3.Zero);
+        int cubeCount = 0;
+        for(Entity group : getEntities()) {
+            for(CubeEntity cube : ((CubeGroup)group).getCubes()) {
+                tmpV.add(cube.getX(), cube.getY(), cube.getZ());
+                cubeCount++;
+            }
+        }
+        camPosBegin.set(getCamera().position);
+        tmpV.scl(1f/cubeCount);
+        camPosDelta.set(tmpV).sub(getCameraTouchController().target);
+
+        if(!animated) {
+            moveCameraBy(camPosDelta);
+        } else {
+            camAnimator.set(0, camPosDelta.len(), CAM_ANIM_DURATION);
+            camAnimator.start();
+        }
+    }
+
     @Override
     public boolean isRenderingRequested() {
-        return super.isRenderingRequested() || !moveAnimator.isPaused() || !rotationAnimator.isPaused();
+        return super.isRenderingRequested() || !moveAnimator.isPaused() || !rotationAnimator.isPaused() || !camAnimator.isPaused();
     }
 
 }

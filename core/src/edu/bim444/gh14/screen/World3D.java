@@ -85,6 +85,10 @@ public class World3D extends World {
         //Gdx.input.setInputProcessor(camController);
     }
 
+    public CameraTouchController getCameraTouchController() {
+        return camController;
+    }
+
     public Entity3D getEntityFromCoordinates(float deviceX, float deviceY) {
         Ray ray = getCamera().getPickRay(deviceX, deviceY);
         Entity3D entity = null;
@@ -122,10 +126,30 @@ public class World3D extends World {
     }
 
     @Override
-    public void translateCamera(float deltaX, float deltaY, float deltaZ) {
-        super.translateCamera(deltaX, deltaY, deltaZ);
+    public void moveCameraBy(float deltaX, float deltaY, float deltaZ) {
+        super.moveCameraBy(deltaX, deltaY, deltaZ);
         if(camController != null)
             camController.target.add(deltaX, deltaY, deltaZ);
+    }
+
+    @Override
+    public void moveCameraBy(Vector3 delta) {
+        moveCameraBy(delta.x, delta.y, delta.z);
+    }
+
+    @Override
+    public void moveCameraTo(float x, float y, float z) {
+        float xx = getCamera().position.x;
+        float yy = getCamera().position.y;
+        float zz = getCamera().position.z;
+        super.moveCameraTo(x, y, z);
+        if(camController != null)
+            camController.target.add(x - xx, y - yy, z - zz);
+    }
+
+    @Override
+    public void moveCameraTo(Vector3 point) {
+        moveCameraTo(point.x, point.y, point.z);
     }
 
 }

@@ -29,8 +29,9 @@ public class TouchEntity extends Entity {
 
     @Override
     public boolean touchUp(float x, float y, int pointer) {
+        boolean b = touched;
         touched = false;
-        return false;
+        return b;
     }
 
     @Override

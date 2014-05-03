@@ -145,12 +145,20 @@ public abstract class World {
         return screen;
     }
 
-    public void translateCamera(float deltaX, float deltaY, float deltaZ) {
+    public void moveCameraBy(float deltaX, float deltaY, float deltaZ) {
         cam.translate(deltaX, deltaY, deltaZ);
     }
 
-    public void translateCamera(Vector3 delta) {
+    public void moveCameraBy(Vector3 delta) {
         cam.translate(delta.x, delta.y, delta.z);
+    }
+
+    public void moveCameraTo(float x, float y, float z) {
+        cam.position.set(x, y, z);
+    }
+
+    public void moveCameraTo(Vector3 point) {
+        cam.position.set(point.x, point.y, point.z);
     }
 
 }

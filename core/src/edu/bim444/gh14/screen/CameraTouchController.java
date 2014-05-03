@@ -51,18 +51,22 @@ public class CameraTouchController extends CameraInputController {
             deltaY = 0;
     }
 
-    public boolean isRenderingRequested() {
-        return (deltaX != 0 || deltaY != 0);
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    public void resetDelta() {
         deltaX = deltaY = 0;
         for(int i = 0; i < deltaLength; i++) {
             deltaArrayX[i] = 0;
             deltaArrayY[i] = 0;
         }
         deltaIndex = 0;
+    }
+
+    public boolean isRenderingRequested() {
+        return (deltaX != 0 || deltaY != 0);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        resetDelta();
 
         return super.touchDown(screenX, screenY, pointer, button);
     }

@@ -137,6 +137,10 @@ public class CubeGroup extends Entity3D {
         return cubes.size;
     }
 
+    public Array<CubeEntity> getCubes() {
+        return cubes;
+    }
+
     public int getAnchor() {
         return anchor;
     }

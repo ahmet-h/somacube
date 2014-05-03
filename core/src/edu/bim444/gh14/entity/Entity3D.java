@@ -117,6 +117,7 @@ public class Entity3D extends Entity {
         rotation.set(tmpM);
         instance.transform.set(rotation);
         tmpV.rotate(axis, degrees);
+        // Restores translation
         moveBy(-tmpV.x, -tmpV.y, -tmpV.z);
 
         //instance.transform.getRotation(rotation);
