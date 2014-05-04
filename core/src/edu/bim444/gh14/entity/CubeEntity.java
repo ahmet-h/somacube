@@ -12,6 +12,8 @@ import edu.bim444.gh14.screen.World3D;
 
 public class CubeEntity extends Entity3D {
 
+    private Color diffuseColor = new Color(Color.WHITE);
+
     public CubeEntity(Screen screen, World3D world3D, float width) {
         super(screen, world3D, null);
 
@@ -33,16 +35,27 @@ public class CubeEntity extends Entity3D {
     public CubeEntity(Screen screen, World3D world3D, float width, Texture texture, float alpha) {
         super(screen, world3D, null);
 
+        diffuseColor.set(alpha, alpha, alpha, alpha);
         ModelBuilder modelBuilder = new ModelBuilder();
         setModel(modelBuilder.createBox(width, width, width,
                 new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1f, 1f, 1f, 1f),
-                             ColorAttribute.createDiffuse(alpha, alpha, alpha, alpha)),
+                             ColorAttribute.createDiffuse(diffuseColor)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates));
     }
 
     @Override
     public void update() {
 
+    }
+
+    public void setDiffuseColor(Color diffuseColor) {
+        this.diffuseColor.set(diffuseColor.r, diffuseColor.g, diffuseColor.b, this.diffuseColor.a);
+        ColorAttribute attr = (ColorAttribute) getModelInstance().materials.get(0).get(ColorAttribute.Diffuse);
+        attr.color.set(this.diffuseColor);
+    }
+
+    public Color getDiffuseColor() {
+        return diffuseColor;
     }
 
 }

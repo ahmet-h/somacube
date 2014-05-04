@@ -87,7 +87,7 @@ public class UIJoystick extends Entity {
         public JoystickHead(Texture head, float radius, Screen screen) {
             super(head.getWidth() * SCALE, head.getHeight() * SCALE, screen);
 
-            TOUCH_RADIUS2 = (getWidth() / 2 + 16) * (getWidth() / 2 + 16);
+            TOUCH_RADIUS2 = (getWidth() / 2 + 24) * (getWidth() / 2 + 24);
 
             this.head = head;
             this.radius = radius;

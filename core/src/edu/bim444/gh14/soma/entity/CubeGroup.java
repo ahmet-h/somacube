@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import edu.bim444.gh14.entity.Animator;
 import edu.bim444.gh14.entity.CubeEntity;
 import edu.bim444.gh14.entity.Entity3D;
+import edu.bim444.gh14.entity.Interpolator;
 import edu.bim444.gh14.screen.Screen;
 import edu.bim444.gh14.screen.World3D;
 import edu.bim444.gh14.soma.Assets;
@@ -52,9 +54,14 @@ public class CubeGroup extends Entity3D {
 
     private final Color SELECTED_COLOR = new Color(0.7f, 0.8f, 0.7f, 1);
 
+    private static final int HIGHLIGHT_DURATION = 30;
+
     private int anchor;
     private Array<CubeEntity> cubes;
     private boolean selected;
+
+    private Animator highlightAnimator;
+    private Color tmpC = new Color();
 
     public CubeGroup(int[] positions, Screen screen, World3D world3D) {
         super(screen, world3D, null);
@@ -67,12 +74,24 @@ public class CubeGroup extends Entity3D {
                     positions[i * 3 + 2] * CubeWorld.CUBE_WIDTH);
             cubes.add(cube);
         }
+
+        highlightAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
     }
 
     @Override
     public void update() {
+        boolean highlightPaused = highlightAnimator.isPaused();
+
+        highlightAnimator.update();
+
         for(CubeEntity cube : cubes) {
             cube.update();
+
+            if(!highlightPaused) {
+                float alpha = cube.getDiffuseColor().a;
+                tmpC.set(1, 0, 0, 1).lerp(alpha, alpha, alpha, alpha, highlightAnimator.getNormalizedValue());
+                cube.setDiffuseColor(tmpC);
+            }
         }
     }
 
@@ -164,6 +183,32 @@ public class CubeGroup extends Entity3D {
                 attr.textureDescription.texture = Assets.wood;
             }
         }
+    }
+
+    public boolean collidesWith(CubeGroup other) {
+        for(CubeEntity cube : cubes) {
+            for(CubeEntity otherCube : other.getCubes()) {
+                if(cube.collidesWith(otherCube))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean checkCollisionWith(CubeGroup other) {
+        if(collidesWith(other)) {
+            highlightAnimator.set(0, 1, HIGHLIGHT_DURATION);
+            highlightAnimator.start();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isHighlighting() {
+        return !highlightAnimator.isPaused();
     }
 
 }

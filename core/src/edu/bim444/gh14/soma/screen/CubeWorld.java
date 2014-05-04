@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import edu.bim444.gh14.entity.*;
@@ -22,6 +23,7 @@ public class CubeWorld extends World3D {
     private CubeGroup selectedGroup;
     private Vector3 tmpV = new Vector3();
     private Vector3 tmpV2 = new Vector3();
+    private Matrix4 tmpM = new Matrix4();
 
     private Animator moveAnimator;
     private Vector3 currPos = new Vector3();
@@ -110,6 +112,14 @@ public class CubeWorld extends World3D {
                 moveDir.y = Math.round(moveDir.y);
                 moveDir.z = Math.round(moveDir.z);
 
+                selectedGroup.moveTo(tmpV.set(currPos).add(tmpV2.set(moveDir).scl(CUBE_WIDTH)));
+
+                if(checkCollisionsFor(selectedGroup)) {
+                    selectedGroup.moveTo(currPos);
+                    return;
+                }
+                selectedGroup.moveTo(currPos);
+
                 moveAnimator.set(0, CUBE_WIDTH, MOVE_ANIM_DURATION);
                 moveAnimator.start();
             }
@@ -145,6 +155,14 @@ public class CubeWorld extends World3D {
                     rotationAxis.set(0, 1, 0);
                 }
 
+                selectedGroup.rotateAround(currPos, rotationAxis, 90);
+
+                if(checkCollisionsFor(selectedGroup)) {
+                    selectedGroup.rotateAround(currPos, rotationAxis, -90);
+                    return;
+                }
+                selectedGroup.rotateAround(currPos, rotationAxis, -90);
+
                 rotationAnimator.set(0, 90, MOVE_ANIM_DURATION);
                 rotationAnimator.start();
             }
@@ -162,6 +180,14 @@ public class CubeWorld extends World3D {
 
                 moveDir.set(0, 1, 0);
 
+                selectedGroup.moveTo(tmpV.set(currPos).add(tmpV2.set(moveDir).scl(CUBE_WIDTH)));
+
+                if(checkCollisionsFor(selectedGroup)) {
+                    selectedGroup.moveTo(currPos);
+                    return;
+                }
+                selectedGroup.moveTo(currPos);
+
                 moveAnimator.set(0, CUBE_WIDTH, MOVE_ANIM_DURATION);
                 moveAnimator.start();
             }
@@ -178,6 +204,14 @@ public class CubeWorld extends World3D {
                         selectedGroup.getCube(selectedGroup.getAnchor()).getZ());
 
                 moveDir.set(0, -1, 0);
+
+                selectedGroup.moveTo(tmpV.set(currPos).add(tmpV2.set(moveDir).scl(CUBE_WIDTH)));
+
+                if(checkCollisionsFor(selectedGroup)) {
+                    selectedGroup.moveTo(currPos);
+                    return;
+                }
+                selectedGroup.moveTo(currPos);
 
                 moveAnimator.set(0, CUBE_WIDTH, MOVE_ANIM_DURATION);
                 moveAnimator.start();
@@ -198,7 +232,7 @@ public class CubeWorld extends World3D {
         camAnimator.update();
 
         if(!movePaused) {
-            if(moveDir.x == 1)
+            /*if(moveDir.x == 1)
                 selectedGroup.moveTo(currPos.x + moveAnimator.getCurrentValue(), currPos.y, currPos.z);
             else if(moveDir.x == -1)
                 selectedGroup.moveTo(currPos.x - moveAnimator.getCurrentValue(), currPos.y, currPos.z);
@@ -209,7 +243,8 @@ public class CubeWorld extends World3D {
             else if(moveDir.z == 1)
                 selectedGroup.moveTo(currPos.x, currPos.y, currPos.z + moveAnimator.getCurrentValue());
             else if(moveDir.z == -1)
-                selectedGroup.moveTo(currPos.x, currPos.y, currPos.z - moveAnimator.getCurrentValue());
+                selectedGroup.moveTo(currPos.x, currPos.y, currPos.z - moveAnimator.getCurrentValue());*/
+            selectedGroup.moveTo(tmpV.set(currPos).add(tmpV2.set(moveDir).scl(moveAnimator.getCurrentValue())));
         }
 
         if(!rotationPaused) {
@@ -322,8 +357,22 @@ public class CubeWorld extends World3D {
         }
     }
 
+    public boolean checkCollisionsFor(CubeGroup group) {
+        for(Entity otherGroup : getEntities()) {
+            if(group != otherGroup && group.checkCollisionWith(((CubeGroup)otherGroup)))
+                return true;
+        }
+
+        return false;
+    }
+
     @Override
     public boolean isRenderingRequested() {
+        for(Entity group : getEntities()) {
+            if(((CubeGroup)group).isHighlighting())
+                return true;
+        }
+
         return super.isRenderingRequested() || !moveAnimator.isPaused() || !rotationAnimator.isPaused() || !camAnimator.isPaused();
     }
 
