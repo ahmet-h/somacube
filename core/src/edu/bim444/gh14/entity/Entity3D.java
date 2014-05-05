@@ -122,15 +122,15 @@ public class Entity3D extends Entity {
         //bounds.mul(tmpM.set(rotation.x - rx, rotation.y - ry, rotation.z - rz, rotation.w - rw));
     }
 
-    public boolean collidesWith(Entity3D other) {
+    public boolean collidesWith(Entity3D other, float shrinkAmount) {
         Vector3 min = getBoundingBox().getMin();
         Vector3 max = getBoundingBox().getMax();
         Vector3 otherMin = other.getBoundingBox().getMin();
         Vector3 otherMax = other.getBoundingBox().getMax();
 
-        return (min.x + 1 < otherMax.x - 1) && (max.x - 1 > otherMin.x + 1) &&
-               (min.y + 1 < otherMax.y - 1) && (max.y - 1 > otherMin.y + 1) &&
-               (min.z + 1 < otherMax.z - 1) && (max.z - 1 > otherMin.z + 1);
+        return (min.x + shrinkAmount < otherMax.x - shrinkAmount) && (max.x - shrinkAmount > otherMin.x + shrinkAmount) &&
+               (min.y + shrinkAmount < otherMax.y - shrinkAmount) && (max.y - shrinkAmount > otherMin.y + shrinkAmount) &&
+               (min.z + shrinkAmount < otherMax.z - shrinkAmount) && (max.z - shrinkAmount > otherMin.z + shrinkAmount);
     }
 
     public ModelInstance getModelInstance() {

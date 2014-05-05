@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import edu.bim444.gh14.screen.Screen;
 
-public class UIJoystick extends Entity {
+public class UIJoystick extends TouchEntity {
 
     public static final float SCALE = 1.25f;
     public static final float ALPHA = 0.8f;
@@ -43,17 +43,17 @@ public class UIJoystick extends Entity {
 
     @Override
     public boolean touchDown(float x, float y, int pointer) {
-        return head.touchDown(x, y, pointer);
+        return head.touchDown(x, y, pointer) || super.touchDown(x, y, pointer);
     }
 
     @Override
     public boolean touchUp(float x, float y, int pointer) {
-        return head.touchUp(x, y, pointer);
+        return head.touchUp(x, y, pointer) || super.touchUp(x, y, pointer);
     }
 
     @Override
     public boolean touchDragged(float x, float y, int pointer) {
-        return head.touchDragged(x, y, pointer);
+        return head.touchDragged(x, y, pointer) || super.touchDragged(x, y, pointer);
     }
 
     @Override

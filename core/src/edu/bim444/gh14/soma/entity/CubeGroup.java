@@ -164,16 +164,13 @@ public class CubeGroup extends Entity3D {
         return anchor;
     }
 
-    public void setAnchor(int anchor) {
-        this.anchor = anchor;
-    }
-
     public boolean isSelected() {
         return selected;
     }
 
-    public void setSelected(boolean selected) {
+    public void setSelected(boolean selected, int anchor) {
         this.selected = selected;
+        this.anchor = anchor;
         for(CubeEntity cube : cubes) {
             if(selected) {
                 TextureAttribute attr = (TextureAttribute) cube.getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
@@ -185,10 +182,14 @@ public class CubeGroup extends Entity3D {
         }
     }
 
+    public void setSelected(boolean selected) {
+        setSelected(selected, anchor);
+    }
+
     public boolean collidesWith(CubeGroup other) {
         for(CubeEntity cube : cubes) {
             for(CubeEntity otherCube : other.getCubes()) {
-                if(cube.collidesWith(otherCube))
+                if(cube.collidesWith(otherCube, 0.25f))
                     return true;
             }
         }

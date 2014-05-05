@@ -16,7 +16,7 @@ public class SomaLauncher {
         cfg.width = screenDimension.width;
         cfg.height = screenDimension.height;
         cfg.fullscreen = true;*/
-        cfg.vSyncEnabled = true;
+        //cfg.vSyncEnabled = true;
         cfg.useGL30 = true;
         new LwjglApplication(new SomaGame(), cfg);
     }

@@ -29,6 +29,7 @@ public class CameraTouchController extends CameraInputController {
     public CameraTouchController(Camera camera) {
         super(camera);
         pinchZoomFactor = 48;
+        rotateAngle = 270f;
 
         zoomMinV = new Vector3();
         zoomMaxV = new Vector3();

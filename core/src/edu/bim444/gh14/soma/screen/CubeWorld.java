@@ -21,6 +21,7 @@ public class CubeWorld extends World3D {
 
     private CubeGroup selectingGroup;
     private CubeGroup selectedGroup;
+    private int selectedAnchor;
     private Vector3 tmpV = new Vector3();
     private Vector3 tmpV2 = new Vector3();
     private Matrix4 tmpM = new Matrix4();
@@ -154,13 +155,19 @@ public class CubeWorld extends World3D {
                     rotationAxis.set(0, 1, 0);
                 }
 
-                selectedGroup.rotateAround(currPos, rotationAxis, 90);
-
+                selectedGroup.rotateAround(currPos, rotationAxis, 45);
                 if(checkCollisionsFor(selectedGroup)) {
-                    selectedGroup.rotateAround(currPos, rotationAxis, -90);
+                    selectedGroup.rotateAround(currPos, rotationAxis, -45);
                     return;
+                } else {
+                    selectedGroup.rotateAround(currPos, rotationAxis, 45);
+                    if(checkCollisionsFor(selectedGroup)) {
+                        selectedGroup.rotateAround(currPos, rotationAxis, -90);
+                        return;
+                    }
+                    selectedGroup.rotateAround(currPos, rotationAxis, -45);
                 }
-                selectedGroup.rotateAround(currPos, rotationAxis, -90);
+                selectedGroup.rotateAround(currPos, rotationAxis, -45);
 
                 rotationAnimator.set(0, 90, MOVE_ANIM_DURATION);
                 rotationAnimator.start();
@@ -293,7 +300,7 @@ public class CubeWorld extends World3D {
                 selectedGroup.setSelected(false);
 
             selectedGroup = cg;
-            selectedGroup.setSelected(true);
+            selectedGroup.setSelected(true, selectedAnchor);
         }
 
         return super.touchWorldUp(deviceX, deviceY, pointer);
@@ -329,7 +336,7 @@ public class CubeWorld extends World3D {
         }
 
         if(entity != null) {
-            entity.setAnchor(anchor);
+            selectedAnchor = anchor;
         }
 
         return entity;
