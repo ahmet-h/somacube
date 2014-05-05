@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import edu.bim444.gh14.entity.Entity;
 import edu.bim444.gh14.entity.Entity3D;
 
 public class World3D extends World {
@@ -45,6 +47,23 @@ public class World3D extends World {
         super.updateWorld();
         if(camController != null)
             camController.updateDelta();
+    }
+
+    @Override
+    public void drawWorld(float alpha) {
+        getCamera().update();
+
+        Rectangle viewport = getScreen().getGame().getViewport();
+        Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
+
+        modelBatch.begin(getCamera());
+        for(Entity entity : getEntities()) {
+            if(!entity.isHidden())
+                entity.drawEntity(alpha);
+        }
+
+        draw(alpha);
+        modelBatch.end();
     }
 
     @Override

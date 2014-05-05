@@ -3,6 +3,7 @@ package edu.bim444.gh14;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,10 +33,13 @@ public class GdxGame implements ApplicationListener {
     private int renderCount;
     private boolean resized;
 
+    private FPSLogger fpsLogger;
+
     public GdxGame(float virtualWidth, float virtualHeight) {
         VIRTUAL_WIDTH = virtualWidth;
         VIRTUAL_HEIGHT = virtualHeight;
         ASPECT_RATIO = VIRTUAL_WIDTH / VIRTUAL_HEIGHT;
+        fpsLogger = new FPSLogger();
     }
 
     @Override
@@ -76,6 +80,8 @@ public class GdxGame implements ApplicationListener {
             Gdx.graphics.requestRendering();
             renderCount--;
         }
+
+        //fpsLogger.log();
     }
 
     public final void requestRendering() {

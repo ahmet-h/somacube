@@ -34,9 +34,7 @@ public class UIJoystick extends Entity {
         Color c = spriteBatch.getColor();
         spriteBatch.setColor(c.r, c.g, c.b, ALPHA);
 
-        spriteBatch.begin();
         spriteBatch.draw(base, getLeft(), getBottom(), getWidth(), getHeight());
-        spriteBatch.end();
 
         spriteBatch.setColor(c.r, c.g, c.b, 1);
 
@@ -123,9 +121,7 @@ public class UIJoystick extends Entity {
 
         @Override
         public void draw(float alpha) {
-            spriteBatch.begin();
             spriteBatch.draw(head, getLeft(), getBottom(), getWidth(), getHeight());
-            spriteBatch.end();
         }
 
         @Override
@@ -167,7 +163,7 @@ public class UIJoystick extends Entity {
                     }
 
                     // Listener Event
-                    int dir = -1;
+                    int dir;
                     updateData();
                     if(Math.abs(data.x) > Math.abs(data.y))
                         dir = (data.x < 0) ? UIJoystickListener.LEFT : UIJoystickListener.RIGHT;

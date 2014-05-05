@@ -60,12 +60,14 @@ public abstract class Screen {
         Rectangle viewport = game.getViewport();
         Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
 
+        spriteBatch.begin();
         for(Entity entity : entities) {
             if(!entity.isHidden())
                 entity.drawEntity(alpha);
         }
 
         draw(alpha);
+        spriteBatch.end();
     }
 
     public final void addEntity(Entity entity) {

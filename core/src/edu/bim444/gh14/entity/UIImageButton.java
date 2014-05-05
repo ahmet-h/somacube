@@ -22,9 +22,7 @@ public class UIImageButton extends UIButton {
         else
             spriteBatch.setColor(c.r, c.g, c.b, 0.8f);
 
-        spriteBatch.begin();
         spriteBatch.draw(texture, getLeft(), getBottom(), getWidth(), getHeight());
-        spriteBatch.end();
 
         spriteBatch.setColor(c.r, c.g, c.b, 1);
     }

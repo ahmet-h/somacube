@@ -28,7 +28,7 @@ public class CubeEntity extends Entity3D {
 
         ModelBuilder modelBuilder = new ModelBuilder();
         setModel(modelBuilder.createBox(width, width, width,
-                new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1f, 1f, 1f, 1f)),
+                new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(0.6f, 0.6f, 0.6f, 0.6f)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates));
     }
 
@@ -38,7 +38,7 @@ public class CubeEntity extends Entity3D {
         diffuseColor.set(alpha, alpha, alpha, alpha);
         ModelBuilder modelBuilder = new ModelBuilder();
         setModel(modelBuilder.createBox(width, width, width,
-                new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1f, 1f, 1f, 1f),
+                new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(0.6f, 0.6f, 0.6f, 0.6f),
                              ColorAttribute.createDiffuse(diffuseColor)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates));
     }

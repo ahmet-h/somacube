@@ -44,7 +44,6 @@ public class CubeWorld extends World3D {
         getEnvironment().add(new DirectionalLight().set(color, dir));
         getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
         getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
-        getEnvironment().add(new DirectionalLight().set(color, 0, 1, 0));
 
         addEntity(new CubeGroup(CubeGroup.PIECE_V, screen, this));
         addEntity(new CubeGroup(CubeGroup.PIECE_L, screen, this));

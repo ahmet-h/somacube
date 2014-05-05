@@ -18,11 +18,11 @@ public class Assets {
         joystickHead = new Texture("flatDark00.png");
         joystickHead.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         wood = new Texture("wood_small.jpg");
-        wood.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        //wood.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         wood_brown = new Texture("wood_small_brown.jpg");
-        wood_brown.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        //wood_brown.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         wood_selected = new Texture("wood_small_selected.jpg");
-        wood_selected.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        //wood_selected.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         arrow_up = new Texture("flatDark25.png");
         arrow_up.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         arrow_down = new Texture("flatDark26.png");

@@ -47,9 +47,7 @@ public class Entity3D extends Entity {
 
     @Override
     public void draw(float alpha) {
-        modelBatch.begin(getScreen().getWorld().getCamera());
         modelBatch.render(instance, environment);
-        modelBatch.end();
     }
 
     @Override
@@ -59,9 +57,9 @@ public class Entity3D extends Entity {
 
     @Override
     public void moveTo(float x, float y, float z) {
-        float dx = x - getX();
-        float dy = y - getY();
-        float dz = z - getZ();
+        //float dx = x - getX();
+        //float dy = y - getY();
+        //float dz = z - getZ();
         super.moveTo(x, y, z);
         instance.transform.setTranslation(x, y, z);
 
