@@ -86,8 +86,8 @@ public abstract class Screen {
         game.pushScreen(screen);
     }
 
-    public final Screen popScreen() {
-        return game.popScreen();
+    public final void popScreen() {
+        game.popScreen();
     }
 
     private void unproject(float deviceX, float deviceY, Vector3 touch) {
@@ -150,6 +150,14 @@ public abstract class Screen {
 
     public final float getCenterY() {
         return bounds.y + bounds.height / 2;
+    }
+
+    public final float getWidth() {
+        return bounds.width;
+    }
+
+    public final float getHeight() {
+        return bounds.height;
     }
 
     public final void resize() {

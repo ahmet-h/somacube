@@ -174,7 +174,7 @@ public class CubeGroup extends Entity3D {
         for(CubeEntity cube : cubes) {
             if(selected) {
                 TextureAttribute attr = (TextureAttribute) cube.getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
-                attr.textureDescription.texture = (cube == cubes.get(anchor)) ? Assets.wood_selected : Assets.wood_brown;
+                attr.textureDescription.texture = (cube == cubes.get(anchor)) ? Assets.woodBlack : Assets.woodBrown;
             } else {
                 TextureAttribute attr = (TextureAttribute) cube.getModelInstance().materials.get(0).get(TextureAttribute.Diffuse);
                 attr.textureDescription.texture = Assets.wood;
@@ -189,7 +189,7 @@ public class CubeGroup extends Entity3D {
     public boolean collidesWith(CubeGroup other) {
         for(CubeEntity cube : cubes) {
             for(CubeEntity otherCube : other.getCubes()) {
-                if(cube.collidesWith(otherCube, 0.25f))
+                if(cube.collidesWith(otherCube, 0.1f))
                     return true;
             }
         }

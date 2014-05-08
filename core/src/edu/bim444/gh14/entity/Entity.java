@@ -57,6 +57,14 @@ public abstract class Entity {
         bounds.y = position.y - anchor.y;
     }
 
+    public void setWidth(float width) {
+        bounds.width = width;
+    }
+
+    public void setHeight(float height) {
+        bounds.height = height;
+    }
+
     public boolean contains(float x, float y) {
         return bounds.contains(x, y);
     }
@@ -179,6 +187,14 @@ public abstract class Entity {
 
     public Screen getScreen() {
         return screen;
+    }
+
+    public void setAnchor(float x, float y) {
+        anchor.set(x, y, 0);
+    }
+
+    public void setAnchor(float x, float y, float z) {
+        anchor.set(x, y, z);
     }
 
 }

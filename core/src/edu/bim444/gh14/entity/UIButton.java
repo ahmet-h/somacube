@@ -2,7 +2,7 @@ package edu.bim444.gh14.entity;
 
 import edu.bim444.gh14.screen.Screen;
 
-public class UIButton extends TouchEntity {
+public abstract class UIButton extends TouchEntity {
 
     private UIButtonListener listener;
 

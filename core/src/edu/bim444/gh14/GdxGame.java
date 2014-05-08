@@ -3,6 +3,7 @@ package edu.bim444.gh14;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,10 +11,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import edu.bim444.gh14.screen.Screen;
+import edu.bim444.gh14.screen.ScreenTransition;
 
 import java.util.Stack;
 
 public class GdxGame implements ApplicationListener {
+
+    public static final int SCREEN_CHANGE_NONE = 0;
+    public static final int SCREEN_CHANGE_SET = 1;
+    public static final int SCREEN_CHANGE_PUSH = 2;
+    public static final int SCREEN_CHANGE_POP = 3;
 
     public final float VIRTUAL_WIDTH, VIRTUAL_HEIGHT;
     public final float ASPECT_RATIO;
@@ -30,6 +37,9 @@ public class GdxGame implements ApplicationListener {
     private ShapeRenderer shapeRenderer;
     private SpriteBatch spriteBatch;
     private Screen initialScreen;
+    private Screen nextScreen;
+    private int screenChangeType;
+    private ScreenTransition screenTransition;
     private int renderCount;
     private boolean resized;
 
@@ -54,6 +64,8 @@ public class GdxGame implements ApplicationListener {
         shapeRenderer = new ShapeRenderer();
         spriteBatch = new SpriteBatch();
 
+        screenTransition = new ScreenTransition(this, null, 0, Color.BLACK, 40);
+
         requestRendering();
     }
 
@@ -75,6 +87,7 @@ public class GdxGame implements ApplicationListener {
         drawScreen(alpha);
 
         checkRenderingRequest();
+        checkScreenChange();
 
         if(renderCount > 0) {
             Gdx.graphics.requestRendering();
@@ -89,40 +102,76 @@ public class GdxGame implements ApplicationListener {
     }
 
     private void checkRenderingRequest() {
-        if(screens.peek().isRenderingRequested())
+        if(screens.peek().isRenderingRequested() || !screenTransition.isPaused())
             requestRendering();
     }
 
     private void updateScreen() {
         screens.peek().updateScreen();
+        if(!screenTransition.isPaused())
+            screenTransition.update();
     }
 
     private void drawScreen(float alpha) {
         screens.peek().drawScreen(alpha);
+        if(!screenTransition.isPaused())
+            screenTransition.draw(alpha);
     }
 
     public void setScreen(Screen screen) {
+        nextScreen = screen;
+        screenChangeType = SCREEN_CHANGE_SET;
+
         if(screens.isEmpty()) {
-            pushScreen(screen);
-        } else {
-            screens.peek().dispose();
-            screens.setElementAt(screen, screens.size() - 1);
-            screen.init(this);
+            screens.push(nextScreen);
+            nextScreen.init(this);
+            screenChangeType = SCREEN_CHANGE_NONE;
         }
     }
 
     public void pushScreen(Screen screen) {
-        screens.push(screen);
-        screen.init(this);
+        nextScreen = screen;
+        screenChangeType = SCREEN_CHANGE_PUSH;
+
+        if(screens.isEmpty()) {
+            screens.push(nextScreen);
+            nextScreen.init(this);
+            screenChangeType = SCREEN_CHANGE_NONE;
+        }
     }
 
-    public Screen popScreen() {
-        if(screens.size() <= 1)
-            throw new RuntimeException("Cannot pop the screen since there is only one!");
+    public void popScreen() {
+        screenChangeType = SCREEN_CHANGE_POP;
+    }
 
-        Screen poped = screens.pop();
-        poped.dispose();
-        return poped;
+    public void checkScreenChange() {
+        if(screenChangeType == SCREEN_CHANGE_NONE)
+            return;
+
+        if(screenChangeType == SCREEN_CHANGE_SET) {
+            screens.peek().dispose();
+            screens.setElementAt(nextScreen, screens.size() - 1);
+            nextScreen.init(this);
+            accumulator = MAX_DELTA; // To reset accumulator in the next frame
+        } else if(screenChangeType == SCREEN_CHANGE_PUSH) {
+            screens.push(nextScreen);
+            nextScreen.init(this);
+            accumulator = MAX_DELTA; // To reset accumulator in the next frame
+        } else if(screenChangeType == SCREEN_CHANGE_POP) {
+            if(screens.size() <= 1)
+                throw new RuntimeException("Cannot pop the screen since there is only one!");
+
+            screens.pop().dispose();
+        }
+
+        screenChangeType = SCREEN_CHANGE_NONE;
+    }
+
+    public void setScreenTransition(Screen to, int screenChangeType, Color fadeColor) {
+        if(screenTransition.isPaused()) {
+            screenTransition.set(to, screenChangeType, fadeColor);
+            screenTransition.start();
+        }
     }
 
     public final void start(Screen initialScreen) {
