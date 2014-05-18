@@ -23,7 +23,7 @@ public class TitleScreen extends Screen {
         titleImage.moveTo(getCenterX(), yy);
         addEntity(titleImage);
 
-        UINinePatchButton challengesButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoBig, "Challenges", -1, 32, this);
+        UINinePatchButton challengesButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoNormal, "Challenges", -1, 32, this);
         yy -= titleImage.getHeight()/2 + challengesButton.getHeight()/2 + BUTTON_MARGIN;
         challengesButton.moveTo(getCenterX(), yy);
         challengesButton.setWidth(BUTTON_WIDTH);
@@ -32,7 +32,7 @@ public class TitleScreen extends Screen {
         addEntity(challengesButton);
         yy -= challengesButton.getHeight() + BUTTON_MARGIN;
 
-        UINinePatchButton instructionsButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoBig, "Instructions", -1, 32, this);
+        UINinePatchButton instructionsButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoNormal, "Instructions", -1, 32, this);
         instructionsButton.moveTo(getCenterX(), yy);
         instructionsButton.setWidth(BUTTON_WIDTH);
         instructionsButton.updateAnchor();
@@ -42,7 +42,8 @@ public class TitleScreen extends Screen {
         challengesButton.setUIButtonListener(new UIButtonListener() {
             @Override
             public void onClick() {
-                getGame().setScreenTransition(new CubeScreen(), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
+                //getGame().setScreenTransition(new CubeScreen(SomaPieces.SOMA_CUBE), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
+                getGame().setScreenTransition(new ChallengesScreen(), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
             }
         });
 

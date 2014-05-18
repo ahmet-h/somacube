@@ -2,6 +2,7 @@ package edu.bim444.gh14.soma.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
@@ -12,6 +13,8 @@ import edu.bim444.gh14.screen.CameraTouchController;
 import edu.bim444.gh14.screen.Screen;
 import edu.bim444.gh14.screen.World3D;
 import edu.bim444.gh14.soma.entity.CubeGroup;
+import edu.bim444.gh14.soma.entity.SomaChallenge;
+import edu.bim444.gh14.soma.entity.SomaPieces;
 
 public class CubeWorld extends World3D {
 
@@ -37,8 +40,15 @@ public class CubeWorld extends World3D {
     private Animator camAnimator;
     private boolean camMoveInterrupted;
 
-    public CubeWorld(Screen screen, UIJoystick joystickLeft, UIJoystick joystickRight, UIButton upButton, UIButton downButton) {
+    private boolean canSelect;
+    private SomaChallenge challenge;
+    private CubeGroup targetGroup;
+
+    public CubeWorld(Screen screen, SomaChallenge challenge, UIJoystick joystickLeft, UIJoystick joystickRight, UIButton upButton, UIButton downButton) {
         super(screen, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        this.challenge = challenge;
+        this.targetGroup = new CubeGroup(challenge.getTargetGroupPositions(), screen, this);
 
         Vector3 dir = new Vector3(-1, -0.75f, -1);
         Color color = new Color(0.3f, 0.3f, 0.3f, 1);
@@ -46,13 +56,13 @@ public class CubeWorld extends World3D {
         getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
         getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
 
-        addEntity(new CubeGroup(CubeGroup.PIECE_V, screen, this));
-        addEntity(new CubeGroup(CubeGroup.PIECE_L, screen, this));
-        addEntity(new CubeGroup(CubeGroup.PIECE_T, screen, this));
-        addEntity(new CubeGroup(CubeGroup.PIECE_Z, screen, this));
-        addEntity(new CubeGroup(CubeGroup.PIECE_A, screen, this));
-        addEntity(new CubeGroup(CubeGroup.PIECE_B, screen, this));
-        addEntity(new CubeGroup(CubeGroup.PIECE_P, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_V, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_L, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_T, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_Z, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_A, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_B, screen, this));
+        addEntity(new CubeGroup(SomaPieces.PIECE_P, screen, this));
 
         getEntity(0).moveTo(0, 0, 0);
         getEntity(1).moveTo(CUBE_WIDTH * 3, 0, -CUBE_WIDTH * 2);
@@ -61,6 +71,8 @@ public class CubeWorld extends World3D {
         getEntity(4).moveTo(CUBE_WIDTH * 3, 0, CUBE_WIDTH * 2);
         getEntity(5).moveTo(0, 0, CUBE_WIDTH * 4);
         getEntity(6).moveTo(0, 0, -CUBE_WIDTH * 4);
+
+        //addEntity(new CubeGroup(SomaPieces.SOMA_CUBE, screen, this));
 
         setCameraTouchController(new CameraTouchController(getCamera()));
 
@@ -225,6 +237,23 @@ public class CubeWorld extends World3D {
         });
 
         centerCameraPosition(false);
+        canSelect = true;
+    }
+
+    public CubeWorld(ModelBatch modelBatch, Screen screen, CubeGroup preview) {
+        super(modelBatch, screen, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        Vector3 dir = new Vector3(-1, -0.75f, -1);
+        Color color = new Color(0.3f, 0.3f, 0.3f, 1);
+        getEnvironment().add(new DirectionalLight().set(color, dir));
+        getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
+        getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
+
+        addEntity(preview);
+
+        setCameraTouchController(new CameraTouchController(getCamera()));
+        centerCameraPosition(false);
+        canSelect = false;
     }
 
     @Override
@@ -308,7 +337,7 @@ public class CubeWorld extends World3D {
 
     @Override
     public Entity3D getEntityFromCoordinates(float deviceX, float deviceY) {
-        if(!moveAnimator.isPaused())
+        if(!moveAnimator.isPaused() || !canSelect)
             return null;
 
         Ray ray = getCamera().getPickRay(deviceX, deviceY);
@@ -380,6 +409,22 @@ public class CubeWorld extends World3D {
         }
 
         return super.isRenderingRequested() || !moveAnimator.isPaused() || !rotationAnimator.isPaused() || !camAnimator.isPaused();
+    }
+
+    @Override
+    public void dispose() {
+        if(canSelect) {
+            for (Entity entity : getEntities()) {
+                entity.dispose();
+            }
+
+            targetGroup.dispose();
+            modelBatch.dispose();
+        }
+    }
+
+    public CubeGroup getTargetGroup() {
+        return targetGroup;
     }
 
 }

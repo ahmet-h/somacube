@@ -42,6 +42,22 @@ public class World3D extends World {
         setCamera(persCam);
     }
 
+    public World3D(ModelBatch modelBatch, Screen screen, float worldWidth, float worldHeight) {
+        super(screen);
+
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
+        this.modelBatch = modelBatch;
+
+        PerspectiveCamera persCam = new PerspectiveCamera(67, worldWidth, worldHeight);
+        persCam.position.set(16, 16, 16);
+        persCam.lookAt(0, 0, 0);
+        persCam.near = 1;
+        persCam.far = 300;
+        persCam.update();
+        setCamera(persCam);
+    }
+
     @Override
     public void updateWorld() {
         super.updateWorld();

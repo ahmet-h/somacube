@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import edu.bim444.gh14.GdxGame;
 import edu.bim444.gh14.screen.Screen;
+import edu.bim444.gh14.soma.Assets;
 
 public class SplashScreen extends Screen {
+
+    private boolean drawn;
 
     @Override
     public void init(GdxGame game) {
@@ -16,12 +19,15 @@ public class SplashScreen extends Screen {
 
     @Override
     public void update() {
-        getGame().setScreenTransition(new TitleScreen(), GdxGame.SCREEN_CHANGE_SET, Color.BLACK);
+        if(drawn && !Assets.isLoaded()) {
+            Assets.load();
+            getGame().setScreenTransition(new TitleScreen(), GdxGame.SCREEN_CHANGE_SET, Color.BLACK);
+        }
     }
 
     @Override
     public void draw(float alpha) {
-
+        drawn = true;
     }
 
 }

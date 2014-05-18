@@ -1,15 +1,25 @@
 package edu.bim444.gh14.soma.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import edu.bim444.gh14.GdxGame;
 import edu.bim444.gh14.entity.UIButtonListener;
 import edu.bim444.gh14.entity.UIImageButton;
 import edu.bim444.gh14.entity.UIJoystick;
 import edu.bim444.gh14.screen.Screen;
 import edu.bim444.gh14.soma.Assets;
+import edu.bim444.gh14.soma.entity.PauseMenu;
+import edu.bim444.gh14.soma.entity.SomaChallenge;
+import edu.bim444.gh14.soma.entity.TimerText;
 
 public class CubeScreen extends Screen {
+
+    private PauseMenu pauseMenu;
+    private TimerText timerText;
+    private SomaChallenge challenge;
+
+    public CubeScreen(SomaChallenge challenge) {
+        this.challenge = challenge;
+    }
 
     @Override
     public void init(GdxGame game) {
@@ -31,30 +41,56 @@ public class CubeScreen extends Screen {
         downButton.moveTo(joystickLeft.getRight() + upButton.getWidth(), joystickLeft.getY() - upButton.getHeight()/2 - 5);
         addEntity(downButton);
 
-        UIImageButton pauseButton = new UIImageButton(Assets.pauseButton, 1.5f, this);
+        final UIImageButton pauseButton = new UIImageButton(Assets.pauseButton, 1.5f, this);
         pauseButton.moveTo(getLeft() + pauseButton.getWidth()/2 + 60, getTop() - pauseButton.getHeight()/2 - 20);
         addEntity(pauseButton);
+
+        UIImageButton helpButton = new UIImageButton(Assets.helpButton, 1.5f, this);
+        helpButton.moveTo(getRight() - helpButton.getWidth()/2 - 60, pauseButton.getY());
+        addEntity(helpButton);
+
+        timerText = new TimerText(Assets.robotoNormal, this);
+        timerText.moveTo(getCenterX(), pauseButton.getY());
+        addEntity(timerText);
+
+        pauseMenu = new PauseMenu(600, 420, this);
+        addEntity(pauseMenu);
 
         pauseButton.setUIButtonListener(new UIButtonListener() {
             @Override
             public void onClick() {
-                getGame().setScreenTransition(null, GdxGame.SCREEN_CHANGE_POP, Color.BLACK);
+                pauseMenu.setHidden(false);
             }
         });
 
-        setWorld(new CubeWorld(this, joystickLeft, joystickRight, upButton, downButton));
+        setWorld(new CubeWorld(this, challenge, joystickLeft, joystickRight, upButton, downButton));
 
         Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
     }
 
     @Override
     public void update() {
-
+        if(pauseMenu.isHidden())
+            timerText.resume();
+        else
+            timerText.pause();
     }
 
     @Override
     public void draw(float alpha) {
 
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        timerText.dispose();
+    }
+
+    @Override
+    public void pause() {
+        pauseMenu.setHidden(false);
+        timerText.pause();
     }
 
 }

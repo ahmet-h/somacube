@@ -14,9 +14,6 @@ public class SomaGame extends GdxGame {
 	public void create () {
         super.create();
 
-        Assets.load();
-
-        Gdx.gl.glClearColor(0.8f, 0.6f, 0.4f, 1);
         Gdx.graphics.setContinuousRendering(false);
         requestRendering();
         start(new SplashScreen());

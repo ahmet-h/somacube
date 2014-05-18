@@ -81,32 +81,29 @@ public abstract class World {
 
     public boolean touchWorldDown(float deviceX, float deviceY, int pointer) {
         unproject(deviceX, deviceY, touch);
-        boolean result = false;
-        for(Entity entity : entities) {
-            if(!entity.isHidden() && entity.isTouchable() && entity.touchDown(touch.x, touch.y, pointer))
-                result = true;
+        for(int i = entities.size - 1; i >= 0; i--) {
+            if(!entities.get(i).isHidden() && entities.get(i).isTouchable() && entities.get(i).touchDown(touch.x, touch.y, pointer))
+                return true;
         }
-        return result || touchDown(touch.x, touch.y, pointer);
+        return touchDown(touch.x, touch.y, pointer);
     }
 
     public boolean touchWorldUp(float deviceX, float deviceY, int pointer) {
         unproject(deviceX, deviceY, touch);
-        boolean result = false;
-        for(Entity entity : entities) {
-            if(!entity.isHidden() && entity.isTouchable() && entity.touchUp(touch.x, touch.y, pointer))
-                result = true;
+        for(int i = entities.size - 1; i >= 0; i--) {
+            if(!entities.get(i).isHidden() && entities.get(i).isTouchable() && entities.get(i).touchUp(touch.x, touch.y, pointer))
+                return true;
         }
-        return result || touchUp(touch.x, touch.y, pointer);
+        return touchUp(touch.x, touch.y, pointer);
     }
 
     public boolean touchWorldDragged(float deviceX, float deviceY, int pointer) {
         unproject(deviceX, deviceY, touch);
-        boolean result = false;
-        for(Entity entity : entities) {
-            if(!entity.isHidden() && entity.isTouchable() && entity.touchDragged(touch.x, touch.y, pointer))
-                result = true;
+        for(int i = entities.size - 1; i >= 0; i--) {
+            if(!entities.get(i).isHidden() && entities.get(i).isTouchable() && entities.get(i).touchDragged(touch.x, touch.y, pointer))
+                return true;
         }
-        return result || touchDragged(touch.x, touch.y, pointer);
+        return touchDragged(touch.x, touch.y, pointer);
     }
 
     public abstract void update();

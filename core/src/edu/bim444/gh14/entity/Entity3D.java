@@ -141,4 +141,9 @@ public class Entity3D extends Entity {
         return bounds;
     }
 
+    @Override
+    public void dispose() {
+        instance.model.dispose();
+    }
+
 }
