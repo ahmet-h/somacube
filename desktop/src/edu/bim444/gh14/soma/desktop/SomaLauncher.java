@@ -8,9 +8,9 @@ public class SomaLauncher {
 
     public static void main(String[] args) {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-        cfg.title = "SomaCube";
+        cfg.title = "Soma Cube";
         cfg.width = 800;
-        cfg.height = 480;
+        cfg.height = 450;
         cfg.resizable = false;
         /*Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
         cfg.width = screenDimension.width;

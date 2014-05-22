@@ -19,30 +19,30 @@ public class TitleScreen extends Screen {
         super.init(game);
 
         UIImage titleImage = new UIImage(Assets.titleImage, 1, this);
-        float yy = getTop() - titleImage.getHeight()/2 - 40;
+        float yy = getTop() - titleImage.getHeight()/2 - 24;
         titleImage.moveTo(getCenterX(), yy);
         addEntity(titleImage);
 
-        UINinePatchButton challengesButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoNormal, "Challenges", -1, 32, this);
-        yy -= titleImage.getHeight()/2 + challengesButton.getHeight()/2 + BUTTON_MARGIN;
-        challengesButton.moveTo(getCenterX(), yy);
-        challengesButton.setWidth(BUTTON_WIDTH);
-        challengesButton.updateAnchor();
-        challengesButton.updateTextAnchor();
-        addEntity(challengesButton);
-        yy -= challengesButton.getHeight() + BUTTON_MARGIN;
-
         UINinePatchButton instructionsButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoNormal, "Instructions", -1, 32, this);
+        yy = getBottom() + instructionsButton.getHeight()/2 + 48;
         instructionsButton.moveTo(getCenterX(), yy);
         instructionsButton.setWidth(BUTTON_WIDTH);
         instructionsButton.updateAnchor();
         instructionsButton.updateTextAnchor();
         addEntity(instructionsButton);
+        yy += instructionsButton.getHeight() + BUTTON_MARGIN;
+
+        UINinePatchButton challengesButton = new UINinePatchButton(Assets.redButtonNinePatch, Assets.robotoNormal, "Challenges", -1, 32, this);
+        challengesButton.moveTo(getCenterX(), yy);
+        challengesButton.setWidth(BUTTON_WIDTH);
+        challengesButton.updateAnchor();
+        challengesButton.updateTextAnchor();
+        addEntity(challengesButton);
 
         challengesButton.setUIButtonListener(new UIButtonListener() {
             @Override
             public void onClick() {
-                //getGame().setScreenTransition(new CubeScreen(SomaPieces.SOMA_CUBE), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
+                //getGame().setScreenTransition(new CubeScreen(Assets.challenges.getChallengeByIndex(0)), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
                 getGame().setScreenTransition(new ChallengesScreen(), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
             }
         });

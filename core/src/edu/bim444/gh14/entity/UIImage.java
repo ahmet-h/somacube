@@ -13,6 +13,12 @@ public class UIImage extends Entity {
         this.texture = texture;
     }
 
+    public UIImage(Texture texture, float width, float height, Screen screen) {
+        super(width, height, screen);
+
+        this.texture = texture;
+    }
+
     @Override
     public void update() {
 

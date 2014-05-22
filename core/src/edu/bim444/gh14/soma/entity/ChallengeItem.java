@@ -10,9 +10,9 @@ import edu.bim444.gh14.soma.Assets;
 
 public class ChallengeItem extends UIButton {
 
-    public final float TITLE_HEIGHT = 60;
+    public final float TITLE_HEIGHT = 56;
     public final float PANEL_OVERLAP = 8;
-    public final float BEST_TIME_HEIGHT = 48;
+    public final float BEST_TIME_HEIGHT = 40;
 
     private UINinePatchImage titlePanel;
     private UINinePatchImage bottomPanel;

@@ -40,6 +40,10 @@ public class Animator {
         set(fromValue, toValue, duration, interpolator);
     }
 
+    public void set(float fromValue, float toValue) {
+        set(fromValue, toValue, duration);
+    }
+
     public void update() {
         if(paused) return;
 

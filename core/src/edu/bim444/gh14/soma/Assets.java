@@ -1,6 +1,8 @@
 package edu.bim444.gh14.soma;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -22,6 +24,9 @@ public class Assets {
     public static Texture redPanel;
     public static Texture greyPanel;
     public static Texture helpButton;
+    public static Texture textButtonBG;
+    public static Texture navBack;
+    public static Texture circle;
 
     public static Texture placeholder;
 
@@ -73,6 +78,22 @@ public class Assets {
         greyPanel.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         helpButton = new Texture("helpButton.png");
         helpButton.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        helpButton = new Texture("helpButton.png");
+        helpButton.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        navBack = new Texture("navigation_back.png");
+        navBack.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(1, 1, 1, 0.2f);
+        pixmap.fill();
+        textButtonBG = new Texture(pixmap);
+        pixmap.dispose();
+
+        pixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fillCircle(16, 16, 16);
+        circle = new Texture(pixmap);
+        pixmap.dispose();
 
         placeholder = new Texture("soma_placeholder.png");
         placeholder.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -120,8 +141,12 @@ public class Assets {
         pauseButton.dispose();
         redPanel.dispose();
         helpButton.dispose();
+        textButtonBG.dispose();
+        navBack.dispose();
 
         placeholder.dispose();
+
+        circle.dispose();
 
         robotoTiny.dispose();
         robotoSmall.dispose();

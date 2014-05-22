@@ -72,7 +72,7 @@ public class CubeWorld extends World3D {
         getEntity(5).moveTo(0, 0, CUBE_WIDTH * 4);
         getEntity(6).moveTo(0, 0, -CUBE_WIDTH * 4);
 
-        //addEntity(new CubeGroup(SomaPieces.SOMA_CUBE, screen, this));
+        //addEntity(new CubeGroup(SomaChallenges.SOMA_CUBE, screen, this));
 
         setCameraTouchController(new CameraTouchController(getCamera()));
 

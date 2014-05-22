@@ -44,4 +44,9 @@ public class TouchEntity extends Entity {
     public boolean isTouched() {
         return touched;
     }
+
+    public void setTouched(boolean touched) {
+        this.touched = touched;
+    }
+
 }

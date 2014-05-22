@@ -47,12 +47,14 @@ public class SomaChallenges {
         challenges = new HashMap<>();
         challengeIds = new Array<>();
 
-        put(new SomaChallenge(1, "Soma Cube", Assets.placeholder, SOMA_CUBE));
-        put(new SomaChallenge(2, "Soma Cube", Assets.placeholder, SOMA_CUBE));
-        put(new SomaChallenge(3, "Soma Cube", Assets.placeholder, SOMA_CUBE));
-        put(new SomaChallenge(4, "Soma Cube", Assets.placeholder, SOMA_CUBE));
-        put(new SomaChallenge(5, "Soma Cube", Assets.placeholder, SOMA_CUBE));
-        put(new SomaChallenge(6, "Soma Cube", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(1, "Soma Cube 1", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(2, "Soma Cube 2", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(3, "Soma Cube 3", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(4, "Soma Cube 4", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(5, "Soma Cube 5", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(6, "Soma Cube 6", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(7, "Soma Cube 7", Assets.placeholder, SOMA_CUBE));
+        put(new SomaChallenge(8, "Soma Cube 8", Assets.placeholder, SOMA_CUBE));
     }
 
     public SomaChallenge getChallengeById(int id) {
@@ -68,8 +70,9 @@ public class SomaChallenges {
     }
 
     private void put(SomaChallenge challenge) {
-        challenges.put(challenge.getId(), challenge);
-        challengeIds.add(challenge.getId());
+        SomaChallenge prev = challenges.put(challenge.getId(), challenge);
+        if(prev == null)
+            challengeIds.add(challenge.getId());
     }
 
     public void dispose() {
