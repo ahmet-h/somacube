@@ -52,7 +52,7 @@ public class PauseMenu extends Entity {
         quitButton.setUIButtonListener(new UIButtonListener() {
             @Override
             public void onClick() {
-                screen.getGame().setScreenTransition(null, GdxGame.SCREEN_CHANGE_POP, Color.BLACK);
+                screen.getGame().setScreenTransition(null, GdxGame.SCREEN_CHANGE_POP);
             }
         });
 

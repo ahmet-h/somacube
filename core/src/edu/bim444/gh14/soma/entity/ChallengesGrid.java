@@ -1,10 +1,12 @@
 package edu.bim444.gh14.soma.entity;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import edu.bim444.gh14.GdxGame;
-import edu.bim444.gh14.entity.*;
+import edu.bim444.gh14.entity.Animator;
+import edu.bim444.gh14.entity.Entity;
+import edu.bim444.gh14.entity.Interpolator;
+import edu.bim444.gh14.entity.UIButtonListener;
 import edu.bim444.gh14.screen.Screen;
 import edu.bim444.gh14.soma.Assets;
 import edu.bim444.gh14.soma.screen.CubeScreen;
@@ -24,7 +26,7 @@ public class ChallengesGrid extends Entity {
     private static final float MAX_DELTA = 20;
     private static final float MIN_DELTA = 10;
     private static final int MAX_DURATION = 20;
-    private static final int LIMIT_TOLERANCE = 160;
+    private static final int LIMIT_TOLERANCE = 80;
 
     private Array<ChallengeItem> items;
     private int pageCount;
@@ -57,7 +59,7 @@ public class ChallengesGrid extends Entity {
             item.setUIButtonListener(new UIButtonListener() {
                 @Override
                 public void onClick() {
-                    screen.getGame().setScreenTransition(new CubeScreen(challenge), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
+                    screen.getGame().setScreenTransition(new CubeScreen(challenge), GdxGame.SCREEN_CHANGE_PUSH);
                 }
             });
             items.add(item);
@@ -193,10 +195,13 @@ public class ChallengesGrid extends Entity {
         queueDelta(delta.x);
         if(dragged) {
             float friction = 0;
-            if(getLeft() > 0)
+            if(getLeft() > 0) {
                 friction = getLeft() / LIMIT_TOLERANCE;
-            else if(getRight() < getScreen().getWidth())
+                //friction = 0.9f;
+            } else if(getRight() < getScreen().getWidth()) {
                 friction = (getScreen().getWidth() - getRight()) / LIMIT_TOLERANCE;
+                //friction = 0.9f;
+            }
             friction = Math.min(friction, 1);
             moveBy(delta.scl(1 - friction).x, 0);
         }

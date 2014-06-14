@@ -249,6 +249,10 @@ public class CubeWorld extends World3D {
         getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
         getEnvironment().add(new DirectionalLight().set(color, dir.rotate(Vector3.Y, 120)));
 
+        moveAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+        rotationAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+        camAnimator = new Animator(0, 0, 0, Interpolator.DECELERATE);
+
         addEntity(preview);
 
         setCameraTouchController(new CameraTouchController(getCamera()));
@@ -425,6 +429,10 @@ public class CubeWorld extends World3D {
 
     public CubeGroup getTargetGroup() {
         return targetGroup;
+    }
+
+    public SomaChallenge getChallenge() {
+        return challenge;
     }
 
 }

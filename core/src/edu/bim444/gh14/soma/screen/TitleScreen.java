@@ -43,7 +43,7 @@ public class TitleScreen extends Screen {
             @Override
             public void onClick() {
                 //getGame().setScreenTransition(new CubeScreen(Assets.challenges.getChallengeByIndex(0)), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
-                getGame().setScreenTransition(new ChallengesScreen(), GdxGame.SCREEN_CHANGE_PUSH, Color.BLACK);
+                getGame().setScreenTransition(new ChallengesScreen(), GdxGame.SCREEN_CHANGE_PUSH, new Color(0.8f, 0.8f, 0.8f, 1));
             }
         });
 

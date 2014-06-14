@@ -23,7 +23,7 @@ public class ScreenTransition {
         this.game = game;
         this.nextScreen = to;
         this.screenChangeType = screenChangeType;
-        this.fadeColor = fadeColor;
+        this.fadeColor = new Color(fadeColor);
         fadeOutAnimator = new Animator(0, 1, duration/2, Interpolator.DECELERATE);
         fadeOutAnimator.setAnimatorListener(new AnimatorListener() {
             @Override
@@ -54,6 +54,14 @@ public class ScreenTransition {
         this.nextScreen = to;
         this.screenChangeType = screenChangeType;
         this.fadeColor.set(fadeColor);
+
+        fadeOutAnimator.stop();
+        fadeInAnimator.stop();
+    }
+
+    public void set(Screen to, int screenChangeType) {
+        this.nextScreen = to;
+        this.screenChangeType = screenChangeType;
 
         fadeOutAnimator.stop();
         fadeInAnimator.stop();

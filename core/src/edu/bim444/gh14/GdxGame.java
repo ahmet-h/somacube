@@ -174,6 +174,13 @@ public class GdxGame implements ApplicationListener {
         }
     }
 
+    public void setScreenTransition(Screen to, int screenChangeType) {
+        if(screenTransition.isPaused()) {
+            screenTransition.set(to, screenChangeType);
+            screenTransition.start();
+        }
+    }
+
     public final void start(Screen initialScreen) {
         this.initialScreen = initialScreen;
         resume();

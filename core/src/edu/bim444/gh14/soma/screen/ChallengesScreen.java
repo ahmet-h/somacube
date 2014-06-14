@@ -1,6 +1,5 @@
 package edu.bim444.gh14.soma.screen;
 
-import com.badlogic.gdx.graphics.Color;
 import edu.bim444.gh14.GdxGame;
 import edu.bim444.gh14.entity.UIButtonListener;
 import edu.bim444.gh14.entity.UIImage;
@@ -43,7 +42,7 @@ public class ChallengesScreen extends Screen {
         actionBarButton.setUIButtonListener(new UIButtonListener() {
             @Override
             public void onClick() {
-                getGame().setScreenTransition(null, GdxGame.SCREEN_CHANGE_POP, Color.BLACK);
+                getGame().setScreenTransition(null, GdxGame.SCREEN_CHANGE_POP);
             }
         });
 

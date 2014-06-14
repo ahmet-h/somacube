@@ -47,6 +47,13 @@ public class CubeScreen extends Screen {
 
         UIImageButton helpButton = new UIImageButton(Assets.helpButton, 1.5f, this);
         helpButton.moveTo(getRight() - helpButton.getWidth()/2 - 60, pauseButton.getY());
+        helpButton.setUIButtonListener(new UIButtonListener() {
+            @Override
+            public void onClick() {
+                timerText.pause();
+                getGame().setScreenTransition(new PreviewScreen((CubeWorld)getWorld()), GdxGame.SCREEN_CHANGE_PUSH);
+            }
+        });
         addEntity(helpButton);
 
         timerText = new TimerText(Assets.robotoNormal, this);
